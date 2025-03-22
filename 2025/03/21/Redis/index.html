@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang=zh-CN>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:description" content="这是一位攻城狮的个人博客！">
+    <meta property="og:type" content="website">
+    <meta name="description" content="这是一位攻城狮的个人博客！">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Redis - 春泥村雨的Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/aircloud.css">
+
+    
+<link rel="stylesheet" href="/css/gitment.css">
+
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_28hi1hpxx24.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+
+    
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> 朴素的个性是深邃思想的自然结果！ </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/avatar.png" />
+        </div>
+        <div class="name">
+            <i>春泥村雨</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/collect/">
+                    <i class="iconfont icon-shoucang1"></i>
+                    <span>收藏</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Redis-%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">1. Redis 的应用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Redis-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%AE%89%E8%A3%85"><span class="toc-text">2. Redis 服务端安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Redis-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E5%90%AF%E5%8A%A8%E4%B8%8E%E5%81%9C%E6%AD%A2"><span class="toc-text">3. Redis 服务端的启动与停止</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%89%8D%E5%8F%B0%E5%90%AF%E5%8A%A8"><span class="toc-text">3.1 前台启动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%90%8E%E5%8F%B0%E5%90%AF%E5%8A%A8"><span class="toc-text">3.2 后台启动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E5%81%9C%E6%AD%A2-redis"><span class="toc-text">3.3 停止 redis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E6%9F%A5%E7%9C%8B-redis-%E6%98%AF%E5%90%A6%E5%90%AF%E5%8A%A8"><span class="toc-text">3.4 查看 redis 是否启动</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Redis-%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%90%AF%E5%8A%A8%E4%B8%8E%E7%AE%80%E5%8D%95%E6%93%8D%E4%BD%9C"><span class="toc-text">4. Redis 客户端的启动与简单操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-Jedis-%E8%BF%9E%E6%8E%A5-redis-%E6%97%B6%E6%8A%A5%E9%94%99%E8%A7%A3%E9%99%A4%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%BE%E7%BD%AE%EF%BC%88%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E4%B8%8D%E6%8E%A8%E8%8D%90%EF%BC%89"><span class="toc-text">5. Jedis 连接 redis 时报错解除的简单设置（生产环境不推荐）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-CentOS-7-%E7%AB%AF%E5%8F%A3%E8%AE%BE%E7%BD%AE"><span class="toc-text">6. CentOS 7 端口设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-redis-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">8. redis 数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1-%E5%AD%97%E7%AC%A6%E4%B8%B2%EF%BC%88String%EF%BC%89"><span class="toc-text">8.1 字符串（String）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2-%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%88%97%E8%A1%A8%EF%BC%88list%EF%BC%89"><span class="toc-text">8.2 字符串列表（list）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-3-%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%9B%86%E5%90%88%EF%BC%88set%EF%BC%89"><span class="toc-text">8.3 字符串集合（set）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-4-%E5%93%88%E5%B8%8C%EF%BC%88hash%EF%BC%89"><span class="toc-text">8.4 哈希（hash）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E5%85%B6%E5%AE%83"><span class="toc-text">9. 其它</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-bg" id="search-bg"></div>
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> 朴素的个性是深邃思想的自然结果！ </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Redis
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2025-03-21 23:02:41</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#Redis" title="Redis">Redis</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content no-indent">
+        <p><strong>NoSQL：not only SQL</strong></p>
+<ul>
+<li>Redis 是远程的，有服务端与客户端，一般我们说的是服务端</li>
+<li>Redis 是基于内存的，的以比较吃内存</li>
+<li>Redis 是非关系型的数据库</li>
+<li>Redis 是基于 C 语言写的</li>
+</ul>
+<h2 id="1-Redis-的应用场景"><a href="#1-Redis-的应用场景" class="headerlink" title="1. Redis 的应用场景"></a>1. Redis 的应用场景</h2><ul>
+<li>缓存</li>
+<li>队列</li>
+<li>数据存储（即具备硬盘持久化机制，Redis有两种持久化机制）</li>
+</ul>
+<h2 id="2-Redis-服务端安装"><a href="#2-Redis-服务端安装" class="headerlink" title="2. Redis 服务端安装"></a>2. Redis 服务端安装</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">在线安装 gcc 环境，提示是否下载，输入 y</span></span><br><span class="line">yum install gcc-c++</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">复制文件到 root 目录下，解压 redis</span></span><br><span class="line">tar -zxvf redis-2.8.13.tar.gz</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">进入解压后的目录</span></span><br><span class="line">cd redis-5.0.2</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">编译</span></span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装 redis 到指定目录 /usr/local/redis</span></span><br><span class="line">make PREFIX=/usr/local/redis install</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">在 redis-5.0.2 目录下，拷贝配置文件到安装目录</span></span><br><span class="line">cp redis.conf /usr/local/redis</span><br></pre></td></tr></table></figure>
+<h2 id="3-Redis-服务端的启动与停止"><a href="#3-Redis-服务端的启动与停止" class="headerlink" title="3. Redis 服务端的启动与停止"></a>3. Redis 服务端的启动与停止</h2><h3 id="3-1-前台启动"><a href="#3-1-前台启动" class="headerlink" title="3.1 前台启动"></a>3.1 前台启动</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">进入 /usr/local/redis/bin 路径启动 redis</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">前端启动，当前窗口不能做其它事情，按 Ctrl + Shift + C 停止</span></span><br><span class="line">./redis-server</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-后台启动"><a href="#3-2-后台启动" class="headerlink" title="3.2 后台启动"></a>3.2 后台启动</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改配置文件，daemonize no 改为 daemonize <span class="built_in">yes</span></span></span><br><span class="line">vi redis.conf</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">/usr/local/redis 目录下，后台启动 redis</span></span><br><span class="line">./bin/redis-server ./redis.conf</span><br></pre></td></tr></table></figure>
+<h3 id="3-3-停止-redis"><a href="#3-3-停止-redis" class="headerlink" title="3.3 停止 redis"></a>3.3 停止 redis</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">停止 redis</span></span><br><span class="line">./bin/redis-cli shutdown</span><br></pre></td></tr></table></figure>
+<h3 id="3-4-查看-redis-是否启动"><a href="#3-4-查看-redis-是否启动" class="headerlink" title="3.4 查看 redis 是否启动"></a>3.4 查看 redis 是否启动</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看 redis 是否启动，默认端口 6379</span></span><br><span class="line">ps -ef | grep -i redis</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看 redis 是否启动</span></span><br><span class="line">ps aux|grep redis-server</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-Redis-客户端的启动与简单操作"><a href="#4-Redis-客户端的启动与简单操作" class="headerlink" title="4. Redis 客户端的启动与简单操作"></a>4. Redis 客户端的启动与简单操作</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动 redis 客户端，发送一些命令来使用</span></span><br><span class="line">./bin/redis-cli</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动 redis 客户端，指定主机与端口号连接 redis 服务端</span></span><br><span class="line">redis-cli -h 127.0.0.1 -p 6379</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">输入 ping，回复 PONG，表示连接成功</span></span><br><span class="line">ping</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">redis 简单操作</span></span><br><span class="line">127.0.0.1:6379&gt; set name &quot;Hello World&quot;</span><br><span class="line">127.0.0.1:6379&gt; get name</span><br><span class="line">127.0.0.1:6379&gt; keys</span><br><span class="line">127.0.0.1:6379&gt; del name</span><br></pre></td></tr></table></figure>
+<h2 id="5-Jedis-连接-redis-时报错解除的简单设置（生产环境不推荐）"><a href="#5-Jedis-连接-redis-时报错解除的简单设置（生产环境不推荐）" class="headerlink" title="5. Jedis 连接 redis 时报错解除的简单设置（生产环境不推荐）"></a>5. Jedis 连接 redis 时报错解除的简单设置（生产环境不推荐）</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Jedis 连接 redis 时，Linux 服务器需要设置防火墙通过端口，不同版本可能设置不同</span></span><br><span class="line">vi /etc/sysconfig/iptables</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">设置通过端口 6379</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">重启防火墙</span></span><br><span class="line">service iptables restart</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Jedis 操作 redis 时，“vi redis.conf”注释掉以下两项</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">bind</span> 127.0.0.1</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">protected-mode <span class="built_in">yes</span></span></span><br></pre></td></tr></table></figure>
+<h2 id="6-CentOS-7-端口设置"><a href="#6-CentOS-7-端口设置" class="headerlink" title="6. CentOS 7 端口设置"></a>6. CentOS 7 端口设置</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">开启一个端口：添加（--permanent永久生效，没有此参数重启后失效）</span></span><br><span class="line">firewall-cmd --zone=public --add-port=6379/tcp --permanent</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">重新载入</span></span><br><span class="line">firewall-cmd --reload</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看</span></span><br><span class="line">firewall-cmd --zone=public --query-port=80/tcp</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">删除</span></span><br><span class="line">firewall-cmd --zone=public --remove-port=80/tcp --permanent</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看所有打开的端口</span></span><br><span class="line">firewall-cmd --zone=public --list-ports</span><br></pre></td></tr></table></figure>
+
+<h2 id="8-redis-数据类型"><a href="#8-redis-数据类型" class="headerlink" title="8. redis 数据类型"></a>8. redis 数据类型</h2><h3 id="8-1-字符串（String）"><a href="#8-1-字符串（String）" class="headerlink" title="8.1 字符串（String）"></a>8.1 字符串（String）</h3><ul>
+<li><p>key 不要超过1024字节</p>
+</li>
+<li><p>统一的命名规范</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">设置值</span></span><br><span class="line">set key value</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">先获取 company 的当前值输出，再设置值</span></span><br><span class="line">getset company baidu</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">删掉值，如果 get 返回(nil)</span></span><br><span class="line">del key</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">递增加 1，如果 num 无值，初始值为 0</span></span><br><span class="line">incr num</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">递减减 1</span></span><br><span class="line">decr num</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">递增指定数值</span></span><br><span class="line">incrby num 5</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">递减指定数值</span></span><br><span class="line">decrby num 3</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">追加字符串</span></span><br><span class="line">append num 5</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-2-字符串列表（list）"><a href="#8-2-字符串列表（list）" class="headerlink" title="8.2 字符串列表（list）"></a>8.2 字符串列表（list）</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">lpush list1 12</span><br><span class="line">lpush list1 12</span><br><span class="line">lpush list1 13</span><br><span class="line">rpop list1</span><br></pre></td></tr></table></figure>
+
+<p>注：list 不要求集合中的元素是唯一的</p>
+<h3 id="8-3-字符串集合（set）"><a href="#8-3-字符串集合（set）" class="headerlink" title="8.3 字符串集合（set）"></a>8.3 字符串集合（set）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">sadd set1 12</span><br><span class="line">sadd set1 13</span><br><span class="line">sadd set1 13</span><br><span class="line"></span><br><span class="line"># 查看集合中的元素个数</span><br><span class="line">scard set1</span><br><span class="line"></span><br><span class="line"># 查看 13 是否在集合中</span><br><span class="line">sismember set1 13</span><br><span class="line"></span><br><span class="line"># 从集合中删除 13</span><br><span class="line">srem set1 13</span><br></pre></td></tr></table></figure>
+
+<p>注：set 要求集合中的元素是唯一的</p>
+<h3 id="8-4-哈希（hash）"><a href="#8-4-哈希（hash）" class="headerlink" title="8.4 哈希（hash）"></a>8.4 哈希（hash）</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">插入值</span></span><br><span class="line">hset hash1 key1 admin</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">获取值</span></span><br><span class="line">hget hash1 key1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">设置多个值</span></span><br><span class="line">hmset hash2 key1 admin key2 12345</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">获取多个值</span></span><br><span class="line">hmget hash2 key1 key2</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">获取所有值</span></span><br><span class="line">hgetall hash2</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">删除</span></span><br><span class="line">hdel hash2 key1 key2</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">返回多个的值</span></span><br><span class="line">hmget hash1 key1 key2</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">增加指定数值</span></span><br><span class="line">hincrby hash1 key1 3</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">判定指定 key 是否存在，存在返回 1，否则返回 0</span></span><br><span class="line">hexists hash1 key1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看 <span class="built_in">hash</span> 个数</span></span><br><span class="line">hlen hash1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看 key 个数</span></span><br><span class="line">hkeys hash1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看 key 的值</span></span><br><span class="line">hvals hash1</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>有序字符串集合（sorted set）</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">zadd zset1 10.1 val1</span><br><span class="line"></span><br><span class="line">zadd zset1 11.2 val2</span><br><span class="line"></span><br><span class="line">zadd zset1 9.2 val3</span><br><span class="line"></span><br><span class="line"># 查看元素个数</span><br><span class="line">zcard zset1</span><br><span class="line"></span><br><span class="line"># 按照 rank 排名排列，且打印分数</span><br><span class="line">zrange zset1 0 2 withscores</span><br><span class="line"></span><br><span class="line"># 查看 val2 的排名</span><br><span class="line">zrank zset1 val2</span><br></pre></td></tr></table></figure>
+
+<h2 id="9-其它"><a href="#9-其它" class="headerlink" title="9. 其它"></a>9. 其它</h2><p>redis 下载：</p>
+<p>Linux：<a target="_blank" rel="noopener" href="https://redis.io/download">https://redis.io/download</a></p>
+<p>Windows：<a target="_blank" rel="noopener" href="https://github.com/MicrosoftArchive/redis/releases">https://github.com/MicrosoftArchive/redis/releases</a></p>
+<p>在线练习：</p>
+<p><a target="_blank" rel="noopener" href="http://try.redis.io/">http://try.redis.io/</a></p>
+<p>教程：</p>
+<p><a target="_blank" rel="noopener" href="http://www.runoob.com/redis/redis-tutorial.html">http://www.runoob.com/redis/redis-tutorial.html</a></p>
+<p>Jedis：</p>
+<p><a target="_blank" rel="noopener" href="https://mvnrepository.com/artifact/redis.clients/jedis">https://mvnrepository.com/artifact/redis.clients/jedis</a></p>
+<p>Spring Data Redis：</p>
+<p><a target="_blank" rel="noopener" href="http://spring.io/projects/spring-data-redis">http://spring.io/projects/spring-data-redis</a></p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/WeChatPay.jpg">
+        <p> 谢谢你的咖啡！ </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+        <div id="lv-container"></div>
+        <div class="giscus"></div>
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        <li>
+            <a target="_blank" href="https://twitter.com/tangyonjian">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-twitter"></i>
+                            </span>
+            </a>
+        </li>
+        
+        
+        <li>
+            <a target="_blank" href="https://www.zhihu.com/people/tangyonjian">
+                            <span class="fa-stack fa-lg">
+                                 <i class="iconfont icon-zhihu"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+        <li>
+            <a target="_blank" href="http://weibo.com/1652401513">
+                            <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+        <li>
+            <a target="_blank" href="https://www.facebook.com/tangyonjian">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-facebook"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+        <li>
+            <a target="_blank"  href="https://github.com/tangyonjian">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+        <li>
+            <a target="_blank"  href="https://www.linkedin.com/in/tangyonjian">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-linkedin"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>  Theme <a target="_blank" rel="noopener" href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
+<script src="/js/index.js"></script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+</html>
