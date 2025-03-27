@@ -8,7 +8,7 @@
     <meta property="og:type" content="website">
     <meta name="description" content="这是一位攻城狮的个人博客！">
     <meta name="keyword"  content="">
-    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="shortcut icon" href="/project/img/favicon.ico">
 
     <title>
         
@@ -18,10 +18,10 @@
 
     <!-- Custom CSS -->
     
-<link rel="stylesheet" href="/css/aircloud.css">
+<link rel="stylesheet" href="/project/css/aircloud.css">
 
     
-<link rel="stylesheet" href="/css/gitment.css">
+<link rel="stylesheet" href="/project/css/gitment.css">
 
     <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
     <link href="//at.alicdn.com/t/font_620856_28hi1hpxx24.css" rel="stylesheet" type="text/css">
@@ -61,7 +61,7 @@
 <div class="nav" id="nav">
     <div class="avatar-name">
         <div class="avatar ">
-            <img src="/img/avatar.png" />
+            <img src="/project/img/avatar.png" />
         </div>
         <div class="name">
             <i>春泥村雨</i>
@@ -70,31 +70,31 @@
     <div class="contents" id="nav-content">
         <ul>
             <li >
-                <a href="/">
+                <a href="/project/">
                     <i class="iconfont icon-shouye1"></i>
                     <span>主页</span>
                 </a>
             </li>
             <li >
-                <a href="/tags">
+                <a href="/project/tags">
                     <i class="iconfont icon-biaoqian1"></i>
                     <span>标签</span>
                 </a>
             </li>
             <li >
-                <a href="/archives">
+                <a href="/project/archives">
                     <i class="iconfont icon-guidang2"></i>
                     <span>存档</span>
                 </a>
             </li>
             <li >
-                <a href="/collect/">
+                <a href="/project/collect/">
                     <i class="iconfont icon-shoucang1"></i>
                     <span>收藏</span>
                 </a>
             </li>
             <li >
-                <a href="/about/">
+                <a href="/project/about/">
                     <i class="iconfont icon-guanyu2"></i>
                     <span>关于</span>
                 </a>
@@ -151,7 +151,7 @@
         
         <span class="attr">标签：/
         
-        <a class="tag" href="/tags/#Redis" title="Redis">Redis</a>
+        <a class="tag" href="/project/tags/#Redis" title="Redis">Redis</a>
         <span>/</span>
         
         
@@ -164,7 +164,7 @@
         <p><strong>NoSQL：not only SQL</strong></p>
 <ul>
 <li>Redis 是远程的，有服务端与客户端，一般我们说的是服务端</li>
-<li>Redis 是基于内存的，的以比较吃内存</li>
+<li>Redis 是基于内存的，所以比较吃内存</li>
 <li>Redis 是非关系型的数据库</li>
 <li>Redis 是基于 C 语言写的</li>
 </ul>
@@ -224,17 +224,12 @@
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">zadd zset1 10.1 val1</span><br><span class="line"></span><br><span class="line">zadd zset1 11.2 val2</span><br><span class="line"></span><br><span class="line">zadd zset1 9.2 val3</span><br><span class="line"></span><br><span class="line"># 查看元素个数</span><br><span class="line">zcard zset1</span><br><span class="line"></span><br><span class="line"># 按照 rank 排名排列，且打印分数</span><br><span class="line">zrange zset1 0 2 withscores</span><br><span class="line"></span><br><span class="line"># 查看 val2 的排名</span><br><span class="line">zrank zset1 val2</span><br></pre></td></tr></table></figure>
 
-<h2 id="9-其它"><a href="#9-其它" class="headerlink" title="9. 其它"></a>9. 其它</h2><p>redis 下载：</p>
-<p>Linux：<a target="_blank" rel="noopener" href="https://redis.io/download">https://redis.io/download</a></p>
+<h2 id="9-其它"><a href="#9-其它" class="headerlink" title="9. 其它"></a>9. 其它</h2><p>Linux：<a target="_blank" rel="noopener" href="https://redis.io/download">https://redis.io/download</a></p>
 <p>Windows：<a target="_blank" rel="noopener" href="https://github.com/MicrosoftArchive/redis/releases">https://github.com/MicrosoftArchive/redis/releases</a></p>
-<p>在线练习：</p>
-<p><a target="_blank" rel="noopener" href="http://try.redis.io/">http://try.redis.io/</a></p>
-<p>教程：</p>
-<p><a target="_blank" rel="noopener" href="http://www.runoob.com/redis/redis-tutorial.html">http://www.runoob.com/redis/redis-tutorial.html</a></p>
-<p>Jedis：</p>
-<p><a target="_blank" rel="noopener" href="https://mvnrepository.com/artifact/redis.clients/jedis">https://mvnrepository.com/artifact/redis.clients/jedis</a></p>
-<p>Spring Data Redis：</p>
-<p><a target="_blank" rel="noopener" href="http://spring.io/projects/spring-data-redis">http://spring.io/projects/spring-data-redis</a></p>
+<p>在线练习：<a target="_blank" rel="noopener" href="http://try.redis.io/">http://try.redis.io/</a></p>
+<p>教程：<a target="_blank" rel="noopener" href="http://www.runoob.com/redis/redis-tutorial.html">http://www.runoob.com/redis/redis-tutorial.html</a></p>
+<p>Jedis：<a target="_blank" rel="noopener" href="https://mvnrepository.com/artifact/redis.clients/jedis">https://mvnrepository.com/artifact/redis.clients/jedis</a></p>
+<p>Spring Data Redis：<a target="_blank" rel="noopener" href="http://spring.io/projects/spring-data-redis">http://spring.io/projects/spring-data-redis</a></p>
 
         
             <div class="donate-container">
@@ -242,7 +237,7 @@
         <button id="donate-button">赞赏</button>
     </div>
     <div class="donate-img-container hide" id="donate-img-container">
-        <img id="donate-img" src="" data-src="/img/WeChatPay.jpg">
+        <img id="donate-img" src="" data-src="/project/img/WeChatPay.jpg">
         <p> 谢谢你的咖啡！ </p>
     </div>
 </div>
@@ -341,12 +336,12 @@
 <script>
     // We expose some of the variables needed by the front end
     window.hexo_search_path = "search.json"
-    window.hexo_root = "/"
+    window.hexo_root = "/project/"
     window.isPost = true
 </script>
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 
-<script src="/js/index.js"></script>
+<script src="/project/js/index.js"></script>
 
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 

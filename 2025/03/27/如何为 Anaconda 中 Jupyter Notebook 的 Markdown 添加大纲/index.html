@@ -12,7 +12,7 @@
 
     <title>
         
-        MySQL - 春泥村雨的Blog
+        如何为 Anaconda 中 Jupyter Notebook 的 Markdown 添加大纲 - 春泥村雨的Blog
         
     </title>
 
@@ -111,7 +111,7 @@
     </div>
     
         <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%9F%A5%E7%9C%8BMySQL%E7%89%88%E6%9C%AC"><span class="toc-text">1. 查看MySQL版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%9F%A5%E7%9C%8BMySQL%E7%9A%84%E5%BD%93%E5%89%8D%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E"><span class="toc-text">2. 查看MySQL的当前存储引擎</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E8%AE%BE%E5%AE%9A%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F"><span class="toc-text">3. 设定大小写敏感</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%89%93%E5%BC%80-Anaconda-Powershell-Prompt%EF%BC%8C%E5%A6%82%E5%9B%BE%EF%BC%9A"><span class="toc-text">1. 打开 Anaconda Powershell Prompt，如图：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E8%BE%93%E5%85%A5%E5%91%BD%E4%BB%A4%E5%AE%89%E8%A3%85-jupyter-contrib-nbextensions"><span class="toc-text">2. 输入命令安装 jupyter_contrib_nbextensions</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%AE%89%E8%A3%85-Jupyter-%E6%8F%92%E4%BB%B6"><span class="toc-text">3. 安装 Jupyter 插件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%9C%A8-Anaconda-%E4%B8%AD%E5%90%AF%E5%8A%A8-Jupyter%EF%BC%8C%E5%90%AF%E5%8A%A8%E4%B9%8B%E5%90%8E%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0-Nbextensions-%E5%B7%B2%E5%AE%89%E8%A3%85"><span class="toc-text">4. 在 Anaconda 中启动 Jupyter，启动之后可以看到 Nbextensions 已安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E7%82%B9%E5%87%BB-Nbextensions%EF%BC%8C%E5%8F%96%E6%B6%88%E5%8B%BE%E9%80%89-disable-configuration-for-nbextensions%EF%BC%8C%E5%B9%B6%E5%8B%BE%E9%80%89-Table-of-Contents-2"><span class="toc-text">5. 点击 Nbextensions，取消勾选 disable configuration for nbextensions，并勾选 Table of Contents (2)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E6%96%B0%E5%BB%BA%E6%88%96%E6%89%93%E5%BC%80%E4%B8%80%E4%B8%AA-Jupyter-Notebook-%E6%96%87%E6%A1%A3%EF%BC%8C%E7%82%B9%E5%87%BB%E2%80%9CTable-of-Contents%E2%80%9D%E6%8C%89%E9%92%AE%EF%BC%8C%E5%B0%B1%E5%8F%AF%E4%BB%A5%E6%9F%A5%E7%9C%8B%E5%A4%A7%E7%BA%B2%E5%88%97%E8%A1%A8%E4%BA%86"><span class="toc-text">6. 新建或打开一个 Jupyter Notebook 文档，点击“Table of Contents”按钮，就可以查看大纲列表了</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E7%82%B9%E5%87%BB%E2%80%9CToC-settings%E2%80%9D%E6%8C%89%E9%92%AE%EF%BC%8C%E5%8F%AF%E4%BB%A5%E8%BF%9B%E8%A1%8C%E7%9B%B8%E5%85%B3%E8%AE%BE%E7%BD%AE%EF%BC%8C%E5%A6%82%EF%BC%8C%E6%98%AF%E5%90%A6%E8%87%AA%E5%8A%A8%E7%BC%96%E5%8F%B7%EF%BC%8C%E6%98%AF%E5%90%A6%E6%B7%BB%E5%8A%A0%E5%88%B0%E6%96%87%E6%A1%A3%E6%9C%AC%E8%BA%AB%E7%AD%89%EF%BC%8C%E5%A6%82%E5%9B%BE%EF%BC%9A"><span class="toc-text">7. 点击“ToC settings”按钮，可以进行相关设置，如，是否自动编号，是否添加到文档本身等，如图：</span></a></li></ol>
 </div>
     
 </div>
@@ -143,15 +143,15 @@
 
 <div class="post-container">
     <div class="post-title">
-        MySQL
+        如何为 Anaconda 中 Jupyter Notebook 的 Markdown 添加大纲
     </div>
 
     <div class="post-meta">
-        <span class="attr">发布于：<span>2025-03-21 23:02:41</span></span>
+        <span class="attr">发布于：<span>2025-03-27 22:06:59</span></span>
         
         <span class="attr">标签：/
         
-        <a class="tag" href="/project/tags/#MySQL" title="MySQL">MySQL</a>
+        <a class="tag" href="/project/tags/#Anaconda Jupyter Notebook" title="Anaconda Jupyter Notebook">Anaconda Jupyter Notebook</a>
         <span>/</span>
         
         
@@ -161,34 +161,16 @@
 </span>
     </div>
     <div class="post-content no-indent">
-        <h2 id="1-查看MySQL版本"><a href="#1-查看MySQL版本" class="headerlink" title="1. 查看MySQL版本"></a>1. 查看MySQL版本</h2><ol>
-<li><p><code>mysql&gt;status;</code></p>
-</li>
-<li><p><code>mysql&gt; select version();</code></p>
-</li>
-<li><p><code>[root@localhost ~]# mysql --version</code></p>
-</li>
-</ol>
-<blockquote>
-<p>参考链接：</p>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/sz-xioabai/p/6547322.html">https://www.cnblogs.com/sz-xioabai/p/6547322.html</a></p>
-</blockquote>
-<h2 id="2-查看MySQL的当前存储引擎"><a href="#2-查看MySQL的当前存储引擎" class="headerlink" title="2. 查看MySQL的当前存储引擎"></a>2. 查看MySQL的当前存储引擎</h2><p>一般情况下，MySQL会默认提供多种存储引擎，可以通过下面命令来查看：</p>
-<ul>
-<li><p>查看MySQL提供什么存储引擎：<br><code>mysql&gt; show engines;</code></p>
-</li>
-<li><p>查看MySQL当前默认存储引擎：<br><code>mysql&gt; show variables like &#39;%storage_engine%&#39;;</code></p>
-</li>
-<li><p>查看MySQL某个表用了什么存储引擎（在显示结果里参数engine后面的就表示该表当前用的存储引擎）<br><code>mysql&gt; show create table 表名;</code></p>
-</li>
-</ul>
-<blockquote>
-<p>参考链接：</p>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/zhming26/p/6322353.html">https://www.cnblogs.com/zhming26/p/6322353.html</a></p>
-</blockquote>
-<h2 id="3-设定大小写敏感"><a href="#3-设定大小写敏感" class="headerlink" title="3. 设定大小写敏感"></a>3. 设定大小写敏感</h2><blockquote>
-<p>参考链接：<br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/morewindows0/p/9247674.html">https://www.cnblogs.com/morewindows0/p/9247674.html</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/xsimplify/article/details/78759832">https://blog.csdn.net/xsimplify/article/details/78759832</a></p>
-</blockquote>
+        <h2 id="1-打开-Anaconda-Powershell-Prompt，如图："><a href="#1-打开-Anaconda-Powershell-Prompt，如图：" class="headerlink" title="1. 打开 Anaconda Powershell Prompt，如图："></a>1. 打开 Anaconda Powershell Prompt，如图：</h2><p><img src="https://upload-images.jianshu.io/upload_images/28402-b0fb7b1c4b91cf19.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image-20211120195724321.png"></p>
+<h2 id="2-输入命令安装-jupyter-contrib-nbextensions"><a href="#2-输入命令安装-jupyter-contrib-nbextensions" class="headerlink" title="2. 输入命令安装 jupyter_contrib_nbextensions"></a>2. 输入命令安装 jupyter_contrib_nbextensions</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install jupyter_contrib_nbextensions</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/28402-503861c98d8bcb35.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image-20211120200416547.png"></p>
+<h2 id="3-安装-Jupyter-插件"><a href="#3-安装-Jupyter-插件" class="headerlink" title="3. 安装 Jupyter 插件"></a>3. 安装 Jupyter 插件</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jupyter contrib nbextension install --user</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/28402-057a166e73faa28e.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image-20211120203457906.png"></p>
+<h2 id="4-在-Anaconda-中启动-Jupyter，启动之后可以看到-Nbextensions-已安装"><a href="#4-在-Anaconda-中启动-Jupyter，启动之后可以看到-Nbextensions-已安装" class="headerlink" title="4. 在 Anaconda 中启动 Jupyter，启动之后可以看到 Nbextensions 已安装"></a>4. 在 Anaconda 中启动 Jupyter，启动之后可以看到 Nbextensions 已安装</h2><h2 id="5-点击-Nbextensions，取消勾选-disable-configuration-for-nbextensions，并勾选-Table-of-Contents-2"><a href="#5-点击-Nbextensions，取消勾选-disable-configuration-for-nbextensions，并勾选-Table-of-Contents-2" class="headerlink" title="5. 点击 Nbextensions，取消勾选 disable configuration for nbextensions，并勾选 Table of Contents (2)"></a>5. 点击 Nbextensions，取消勾选 disable configuration for nbextensions，并勾选 Table of Contents (2)</h2><p><img src="https://upload-images.jianshu.io/upload_images/28402-1257d1363a156e23.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image-20211120201658631.png"></p>
+<h2 id="6-新建或打开一个-Jupyter-Notebook-文档，点击“Table-of-Contents”按钮，就可以查看大纲列表了"><a href="#6-新建或打开一个-Jupyter-Notebook-文档，点击“Table-of-Contents”按钮，就可以查看大纲列表了" class="headerlink" title="6. 新建或打开一个 Jupyter Notebook 文档，点击“Table of Contents”按钮，就可以查看大纲列表了"></a>6. 新建或打开一个 Jupyter Notebook 文档，点击“Table of Contents”按钮，就可以查看大纲列表了</h2><p><img src="https://upload-images.jianshu.io/upload_images/28402-987a2d2b34a1c8c6.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image-20211120202535405.png"></p>
+<h2 id="7-点击“ToC-settings”按钮，可以进行相关设置，如，是否自动编号，是否添加到文档本身等，如图："><a href="#7-点击“ToC-settings”按钮，可以进行相关设置，如，是否自动编号，是否添加到文档本身等，如图：" class="headerlink" title="7. 点击“ToC settings”按钮，可以进行相关设置，如，是否自动编号，是否添加到文档本身等，如图："></a>7. 点击“ToC settings”按钮，可以进行相关设置，如，是否自动编号，是否添加到文档本身等，如图：</h2><p><img src="https://upload-images.jianshu.io/upload_images/28402-e2d15a0fca8a1579.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image-20211120203030599.png"></p>
 
         
             <div class="donate-container">
