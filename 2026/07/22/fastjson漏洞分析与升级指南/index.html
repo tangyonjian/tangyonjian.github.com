@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang=zh-CN>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:description" content="这是一位攻城狮的个人博客！">
+    <meta property="og:type" content="website">
+    <meta name="description" content="这是一位攻城狮的个人博客！">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Fastjson 漏洞事件分析与 JDK 1.6 项目升级指南 - 春泥村雨的Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/aircloud.css">
+
+    
+<link rel="stylesheet" href="/css/gitment.css">
+
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_28hi1hpxx24.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+
+    
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> 朴素的个性是深邃思想的自然结果！ </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/avatar.png" />
+        </div>
+        <div class="name">
+            <i>春泥村雨</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/collect/">
+                    <i class="iconfont icon-shoucang1"></i>
+                    <span>收藏</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Fastjson-%E6%BC%8F%E6%B4%9E%E4%BA%8B%E4%BB%B6%E5%88%86%E6%9E%90%E4%B8%8E-JDK-1-6-%E9%A1%B9%E7%9B%AE%E5%8D%87%E7%BA%A7%E6%8C%87%E5%8D%97"><span class="toc-text">Fastjson 漏洞事件分析与 JDK 1.6 项目升级指南</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%BC%8F%E6%B4%9E%E4%BA%8B%E4%BB%B6%E6%A6%82%E8%BF%B0"><span class="toc-text">一、漏洞事件概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E6%9C%80%E6%96%B0%E6%BC%8F%E6%B4%9E%EF%BC%9Afastjson-1-2-68%E2%80%931-2-83-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%EF%BC%88RCE%EF%BC%89"><span class="toc-text">1.1 最新漏洞：fastjson 1.2.68–1.2.83 远程代码执行（RCE）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86"><span class="toc-text">漏洞原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8D%E5%8F%97%E5%BD%B1%E5%93%8D%E7%9A%84%E6%83%85%E5%86%B5"><span class="toc-text">不受影响的情况</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%85%B3%E8%81%94%E6%BC%8F%E6%B4%9E%EF%BC%9ACVE-2025-70974"><span class="toc-text">1.2 关联漏洞：CVE-2025-70974</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-fastjson-%E6%BC%8F%E6%B4%9E%E5%8E%86%E5%8F%B2%E6%97%B6%E9%97%B4%E7%BA%BF"><span class="toc-text">1.3 fastjson 漏洞历史时间线</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%A0%B8%E5%BF%83%E9%97%AE%E9%A2%98%EF%BC%9AJDK-1-6-%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%9B%B0%E5%A2%83"><span class="toc-text">二、核心问题：JDK 1.6 项目的困境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E7%89%88%E6%9C%AC%E5%85%BC%E5%AE%B9%E6%80%A7%E7%9F%A9%E9%98%B5"><span class="toc-text">2.1 版本兼容性矩阵</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-JDK-1-6-%E9%A1%B9%E7%9B%AE%E9%9D%A2%E4%B8%B4%E7%9A%84%E9%99%90%E5%88%B6"><span class="toc-text">2.2 JDK 1.6 项目面临的限制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81JDK-1-6-%E9%A1%B9%E7%9B%AE%E5%8D%87%E7%BA%A7%E6%96%B9%E6%A1%88%EF%BC%88%E8%AF%A6%E7%BB%86%EF%BC%89"><span class="toc-text">三、JDK 1.6 项目升级方案（详细）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E4%B8%80%EF%BC%9A%E5%90%AF%E7%94%A8-SafeMode%EF%BC%88P0-%E7%B4%A7%E6%80%A5%E4%BF%AE%E5%A4%8D-%E2%80%94-%E6%8E%A8%E8%8D%90%E9%A6%96%E9%80%89%EF%BC%89"><span class="toc-text">方案一：启用 SafeMode（P0 紧急修复 — 推荐首选）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F%EF%BC%88%E4%BB%BB%E9%80%89%E5%85%B6%E4%B8%80%EF%BC%89"><span class="toc-text">三种配置方式（任选其一）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4-Spring-Boot-%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B"><span class="toc-text">完整 Spring Boot 配置示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9A%A0%EF%B8%8F-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">⚠️ 注意事项</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E4%BA%8C%EF%BC%9A%E5%88%87%E6%8D%A2%E5%88%B0-noneautotype-%E7%89%88%E6%9C%AC%EF%BC%88P0-%E6%9B%BF%E4%BB%A3%E6%96%B9%E6%A1%88%EF%BC%89"><span class="toc-text">方案二：切换到 noneautotype 版本（P0 替代方案）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Maven-%E9%85%8D%E7%BD%AE"><span class="toc-text">Maven 配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%AF%E7%94%A8%E7%9A%84-noneautotype-%E7%89%88%E6%9C%AC"><span class="toc-text">可用的 noneautotype 版本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9A%A0%EF%B8%8F-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-1"><span class="toc-text">⚠️ 注意事项</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E4%B8%89%EF%BC%9A%E8%BF%81%E7%A7%BB%E5%88%B0-Jackson%EF%BC%88%E9%95%BF%E6%9C%9F%E6%96%B9%E6%A1%88-%E2%80%94-JDK-6-%E5%85%BC%E5%AE%B9%EF%BC%89"><span class="toc-text">方案三：迁移到 Jackson（长期方案 — JDK 6 兼容）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#JDK-6-%E5%85%BC%E5%AE%B9%E7%9A%84-Jackson-%E7%89%88%E6%9C%AC"><span class="toc-text">JDK 6 兼容的 Jackson 版本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#API-%E5%AF%B9%E7%85%A7%E8%A1%A8"><span class="toc-text">API 对照表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%81%E7%A7%BB%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B"><span class="toc-text">迁移代码示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Spring-Boot-%E4%B8%AD%E6%9B%BF%E6%8D%A2-fastjson-%E4%B8%BA-Jackson"><span class="toc-text">Spring Boot 中替换 fastjson 为 Jackson</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9A%A0%EF%B8%8F-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-2"><span class="toc-text">⚠️ 注意事项</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E5%9B%9B%EF%BC%9A%E8%BF%81%E7%A7%BB%E5%88%B0-Gson%EF%BC%88%E9%95%BF%E6%9C%9F%E6%96%B9%E6%A1%88-%E2%80%94-JDK-6-%E5%85%BC%E5%AE%B9%EF%BC%89"><span class="toc-text">方案四：迁移到 Gson（长期方案 — JDK 6 兼容）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Maven-%E9%85%8D%E7%BD%AE-1"><span class="toc-text">Maven 配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#API-%E5%AF%B9%E7%85%A7%E8%A1%A8-1"><span class="toc-text">API 对照表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B"><span class="toc-text">代码示例</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%96%B9%E6%A1%88%E9%80%89%E6%8B%A9%E5%86%B3%E7%AD%96%E7%9F%A9%E9%98%B5"><span class="toc-text">四、方案选择决策矩阵</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A8%E8%8D%90%E7%AD%96%E7%95%A5"><span class="toc-text">推荐策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%8E%92%E6%9F%A5%E6%B8%85%E5%8D%95"><span class="toc-text">五、排查清单</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E7%A1%AE%E8%AE%A4%E5%BD%93%E5%89%8D-fastjson-%E7%89%88%E6%9C%AC"><span class="toc-text">5.1 确认当前 fastjson 版本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E6%8E%92%E6%9F%A5-AutoType-%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5"><span class="toc-text">5.2 排查 AutoType 使用情况</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E6%8E%92%E6%9F%A5%E9%97%B4%E6%8E%A5%E4%BE%9D%E8%B5%96"><span class="toc-text">5.3 排查间接依赖</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E5%90%84%E6%96%B9%E6%A1%88-Maven-%E5%AE%8C%E6%95%B4%E9%85%8D%E7%BD%AE"><span class="toc-text">六、各方案 Maven 完整配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E4%B8%80-%E6%96%B9%E6%A1%88%E4%BA%8C%E7%BB%84%E5%90%88%E9%85%8D%E7%BD%AE%EF%BC%88%E6%8E%A8%E8%8D%90-JDK-1-6-%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%9C%80%E4%BC%98%E8%A7%A3%EF%BC%89"><span class="toc-text">方案一 + 方案二组合配置（推荐 JDK 1.6 项目的最优解）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E4%B8%89%E5%AE%8C%E6%95%B4%E9%85%8D%E7%BD%AE%EF%BC%88%E8%BF%81%E7%A7%BB%E5%88%B0-Jackson%EF%BC%89"><span class="toc-text">方案三完整配置（迁移到 Jackson）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%92%E9%99%A4%E9%97%B4%E6%8E%A5%E4%BE%9D%E8%B5%96%E4%B8%AD%E7%9A%84-fastjson"><span class="toc-text">排除间接依赖中的 fastjson</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E6%80%BB%E7%BB%93"><span class="toc-text">七、总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-text">参考链接</span></a></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-bg" id="search-bg"></div>
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> 朴素的个性是深邃思想的自然结果！ </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Fastjson 漏洞事件分析与 JDK 1.6 项目升级指南
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2026-07-22 17:49:10</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#security, fastjson, JDK6" title="security, fastjson, JDK6">security, fastjson, JDK6</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content no-indent">
+        <h1 id="Fastjson-漏洞事件分析与-JDK-1-6-项目升级指南"><a href="#Fastjson-漏洞事件分析与-JDK-1-6-项目升级指南" class="headerlink" title="Fastjson 漏洞事件分析与 JDK 1.6 项目升级指南"></a>Fastjson 漏洞事件分析与 JDK 1.6 项目升级指南</h1><blockquote>
+<p><strong>文档日期</strong>：2026-07-22<br><strong>适用对象</strong>：使用 fastjson 的 Java 项目，尤其是 JDK 1.6 环境下的遗留项目</p>
+</blockquote>
+<hr>
+<h2 id="一、漏洞事件概述"><a href="#一、漏洞事件概述" class="headerlink" title="一、漏洞事件概述"></a>一、漏洞事件概述</h2><h3 id="1-1-最新漏洞：fastjson-1-2-68–1-2-83-远程代码执行（RCE）"><a href="#1-1-最新漏洞：fastjson-1-2-68–1-2-83-远程代码执行（RCE）" class="headerlink" title="1.1 最新漏洞：fastjson 1.2.68–1.2.83 远程代码执行（RCE）"></a>1.1 最新漏洞：fastjson 1.2.68–1.2.83 远程代码执行（RCE）</h3><p><strong>发布日期</strong>：2026-07-21<br><strong>发布方</strong>：阿里云安全团队<br><strong>严重等级</strong>：🔴 严重（Critical）<br><strong>漏洞发现者</strong>：FearsOff Cybersecurity 的 Kirill Firsov</p>
+<h4 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a>漏洞原理</h4><p>fastjson 1.2.68 至 1.2.83 版本存在一条远程代码执行漏洞。该漏洞的核心特征如下：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>触发条件</strong></td>
+<td>fastjson <strong>默认配置</strong>即可触发（AutoType OFF + SafeMode OFF）</td>
+</tr>
+<tr>
+<td><strong>前置要求</strong></td>
+<td>无需开启 AutoType，无需 classpath 上存在任何 gadget 类</td>
+</tr>
+<tr>
+<td><strong>部署条件</strong></td>
+<td>目标以 <strong>Spring Boot 可执行 fat-jar</strong> 模式运行（<code>java -jar xxx.jar</code>）</td>
+</tr>
+<tr>
+<td><strong>入口点</strong></td>
+<td><code>JSON.parse</code>、<code>JSON.parseObject(String)</code>、<code>JSON.parseObject(String, Class)</code> 均可达</td>
+</tr>
+<tr>
+<td><strong>验证范围</strong></td>
+<td>Spring Boot 2.x / 3.x / 4.x，JDK 8 / 11 / 17 / 21 均已验证</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>⚠️ <strong>重要提示</strong>：即使指定了目标 Class（如 <code>JSON.parseObject(body, SomeDto.class)</code>），<strong>也不能</strong> 作为缓解措施——攻击者可通过 DTO 中 Object/Map 类型的字段嵌套 payload。这是一种 <strong>“gadget-free”</strong> 利用方式，传统的移除危险类等缓解手段对此完全无效。</p>
+</blockquote>
+<h4 id="不受影响的情况"><a href="#不受影响的情况" class="headerlink" title="不受影响的情况"></a>不受影响的情况</h4><table>
+<thead>
+<tr>
+<th>条件</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>fastjson2 所有版本</strong></td>
+<td>架构上已消除此漏洞根因</td>
+</tr>
+<tr>
+<td><strong>SafeMode = true</strong></td>
+<td>在漏洞触发路径之前即拒绝所有 <code>@type</code></td>
+</tr>
+<tr>
+<td><strong>noneautotype 版本</strong></td>
+<td>漏洞相关代码在编译期被移除</td>
+</tr>
+<tr>
+<td><strong>非 fat-jar 部署</strong></td>
+<td>plain <code>java -jar</code>、uber-jar、Tomcat/Jetty WAR 部署不满足触发条件</td>
+</tr>
+<tr>
+<td><strong>fastjson ≤ 1.2.60</strong></td>
+<td>不存在漏洞相关代码路径</td>
+</tr>
+</tbody></table>
+<h3 id="1-2-关联漏洞：CVE-2025-70974"><a href="#1-2-关联漏洞：CVE-2025-70974" class="headerlink" title="1.2 关联漏洞：CVE-2025-70974"></a>1.2 关联漏洞：CVE-2025-70974</h3><p><strong>发布日期</strong>：2026-01-09<br><strong>CVSS 评分</strong>：10.0（Critical）<br><strong>影响版本</strong>：fastjson &lt; 1.2.48<br><strong>漏洞类型</strong>：CWE-829（包含来自不可信控制域的功能）</p>
+<p>此 CVE 是对早期 fastjson autoType/JNDI 注入漏洞（CVE-2017-18349 的不完整修复）的正式编号。该漏洞在 2023-2025 年间被在野利用，包括 Androxgh0st 攻击组织利用其入侵美国大学基础设施用于托管 C2。</p>
+<h3 id="1-3-fastjson-漏洞历史时间线"><a href="#1-3-fastjson-漏洞历史时间线" class="headerlink" title="1.3 fastjson 漏洞历史时间线"></a>1.3 fastjson 漏洞历史时间线</h3><table>
+<thead>
+<tr>
+<th>时间</th>
+<th>版本</th>
+<th>事件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2017</td>
+<td>≤1.2.24</td>
+<td>CVE-2017-18349：autoType 反序列化 RCE 首次曝光</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>1.2.47</td>
+<td>autoType 缓存绕过，1.2.48 修复</td>
+</tr>
+<tr>
+<td>2020</td>
+<td>1.2.68</td>
+<td>引入 SafeMode 安全模式</td>
+</tr>
+<tr>
+<td>2022</td>
+<td>1.2.83</td>
+<td>1.x 最后一个版本，发布 noneautotype 版本</td>
+</tr>
+<tr>
+<td>2022</td>
+<td>2.0.x</td>
+<td>fastjson2 发布，架构重写</td>
+</tr>
+<tr>
+<td>2024</td>
+<td>—</td>
+<td>fastjson 1.x 正式停止维护</td>
+</tr>
+<tr>
+<td>2026-01</td>
+<td>—</td>
+<td>CVE-2025-70974 正式编号（CVSS 10.0）</td>
+</tr>
+<tr>
+<td>2026-07-21</td>
+<td>1.2.68–1.2.83</td>
+<td><strong>最新 RCE 漏洞公告</strong>（默认配置即可触发）</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="二、核心问题：JDK-1-6-项目的困境"><a href="#二、核心问题：JDK-1-6-项目的困境" class="headerlink" title="二、核心问题：JDK 1.6 项目的困境"></a>二、核心问题：JDK 1.6 项目的困境</h2><h3 id="2-1-版本兼容性矩阵"><a href="#2-1-版本兼容性矩阵" class="headerlink" title="2.1 版本兼容性矩阵"></a>2.1 版本兼容性矩阵</h3><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>最低 JDK 要求</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>fastjson 1.x</strong>（≤1.2.83）</td>
+<td>JDK 6</td>
+<td>✅ 可在 JDK 1.6 运行</td>
+</tr>
+<tr>
+<td><strong>fastjson2</strong></td>
+<td>JDK 8</td>
+<td>❌ <strong>无法在 JDK 1.6 运行</strong></td>
+</tr>
+<tr>
+<td>Jackson 2.0–2.7</td>
+<td>JDK 6</td>
+<td>✅ 可在 JDK 1.6 运行</td>
+</tr>
+<tr>
+<td>Jackson 2.8–2.12</td>
+<td>JDK 7</td>
+<td>❌ 无法在 JDK 1.6 运行</td>
+</tr>
+<tr>
+<td>Jackson 2.13+</td>
+<td>JDK 8</td>
+<td>❌ 无法在 JDK 1.6 运行</td>
+</tr>
+<tr>
+<td>Gson 2.8.5</td>
+<td>JDK 6</td>
+<td>✅ 可在 JDK 1.6 运行</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>核心矛盾</strong>：fastjson2（官方推荐的安全升级路径）最低要求 JDK 8，而 JDK 1.6 项目无法直接升级到 fastjson2。这意味着 JDK 1.6 项目<strong>不能</strong>走”迁移到 fastjson2”这条路。</p>
+</blockquote>
+<h3 id="2-2-JDK-1-6-项目面临的限制"><a href="#2-2-JDK-1-6-项目面临的限制" class="headerlink" title="2.2 JDK 1.6 项目面临的限制"></a>2.2 JDK 1.6 项目面临的限制</h3><ol>
+<li><strong>无法迁移到 fastjson2</strong>：fastjson2 最低支持 JDK 8，JDK 1.6 项目在升级 JDK 之前无法使用</li>
+<li><strong>只能停留在 fastjson 1.x</strong>：1.x 最后版本为 1.2.83，且已停止维护</li>
+<li><strong>需通过配置手段加固</strong>：SafeMode 或 noneautotype 版本是在 JDK 1.6 下的主要防护手段</li>
+<li><strong>替代库版本受限</strong>：Jackson 和 Gson 的 JDK 6 兼容版本也较旧，可能存在各自的已知问题</li>
+</ol>
+<hr>
+<h2 id="三、JDK-1-6-项目升级方案（详细）"><a href="#三、JDK-1-6-项目升级方案（详细）" class="headerlink" title="三、JDK 1.6 项目升级方案（详细）"></a>三、JDK 1.6 项目升级方案（详细）</h2><h3 id="方案一：启用-SafeMode（P0-紧急修复-—-推荐首选）"><a href="#方案一：启用-SafeMode（P0-紧急修复-—-推荐首选）" class="headerlink" title="方案一：启用 SafeMode（P0 紧急修复 — 推荐首选）"></a>方案一：启用 SafeMode（P0 紧急修复 — 推荐首选）</h3><p><strong>适用场景</strong>：需要最快速地消除漏洞风险，且可以接受 AutoType 功能被完全禁用</p>
+<p>SafeMode 在 1.2.68 及之后版本引入。开启后，无论白名单和黑名单如何配置，都会<strong>完全禁用 AutoType 功能</strong>，从根源上杜绝反序列化漏洞。</p>
+<h4 id="三种配置方式（任选其一）"><a href="#三种配置方式（任选其一）" class="headerlink" title="三种配置方式（任选其一）"></a>三种配置方式（任选其一）</h4><p><strong>方式 1：代码配置</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.ParserConfig;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在应用启动时（如 ServletContextListener、Spring @PostConstruct）执行</span></span><br><span class="line">ParserConfig.getGlobalInstance().setSafeMode(<span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>方式 2：JVM 启动参数</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -Dfastjson.parser.safeMode=<span class="literal">true</span> -jar your-app.jar</span><br></pre></td></tr></table></figure>
+
+<p><strong>方式 3：配置文件</strong></p>
+<p>在 classpath 根目录创建 <code>fastjson.properties</code> 文件：</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">fastjson.parser.safeMode</span>=<span class="string">true</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="完整-Spring-Boot-配置示例"><a href="#完整-Spring-Boot-配置示例" class="headerlink" title="完整 Spring Boot 配置示例"></a>完整 Spring Boot 配置示例</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.ParserConfig;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> javax.annotation.PostConstruct;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FastjsonSafeModeConfig</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">initSafeMode</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 启用安全模式，完全禁用 AutoType</span></span><br><span class="line">        ParserConfig.getGlobalInstance().setSafeMode(<span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 显式关闭 AutoType 支持（双保险）</span></span><br><span class="line">        ParserConfig.getGlobalInstance().setAutoTypeSupport(<span class="literal">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="⚠️-注意事项"><a href="#⚠️-注意事项" class="headerlink" title="⚠️ 注意事项"></a>⚠️ 注意事项</h4><ul>
+<li>启用 SafeMode 后，所有依赖 <code>@type</code> 自动类型推断的 JSON 反序列化将<strong>失败</strong></li>
+<li>需全局搜索代码中 <code>JSON.parseObject()</code>、<code>JSON.parse()</code> 的无 Class 参数调用，评估影响</li>
+<li>如果业务中使用了 <code>@type</code> 进行多态序列化，需改为显式指定类型</li>
+<li>建议先在测试环境验证，重点检查涉及接口返回值反序列化、消息队列消费等场景</li>
+</ul>
+<hr>
+<h3 id="方案二：切换到-noneautotype-版本（P0-替代方案）"><a href="#方案二：切换到-noneautotype-版本（P0-替代方案）" class="headerlink" title="方案二：切换到 noneautotype 版本（P0 替代方案）"></a>方案二：切换到 noneautotype 版本（P0 替代方案）</h3><p><strong>适用场景</strong>：希望从编译层面彻底移除 AutoType 代码，比 SafeMode 更彻底</p>
+<p>noneautotype 版本在编译时完全移除了 AutoType 相关能力，不再支持自动加载类，从根源上避免反序列化漏洞。</p>
+<h4 id="Maven-配置"><a href="#Maven-配置" class="headerlink" title="Maven 配置"></a>Maven 配置</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 将原来的 fastjson 依赖替换为 noneautotype 版本 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>fastjson<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.83_noneautotype<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="可用的-noneautotype-版本"><a href="#可用的-noneautotype-版本" class="headerlink" title="可用的 noneautotype 版本"></a>可用的 noneautotype 版本</h4><table>
+<thead>
+<tr>
+<th>Maven 坐标</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>com.alibaba:fastjson:1.2.83_noneautotype</code></td>
+<td><strong>推荐</strong>：1.x 最后版本的 noneautotype 变体</td>
+</tr>
+<tr>
+<td><code>com.alibaba:fastjson:1.2.71_noneautotype</code></td>
+<td>1.2.71 的 noneautotype 变体</td>
+</tr>
+<tr>
+<td><code>com.alibaba:fastjson:1.2.60_noneautotype</code></td>
+<td>1.2.60 的 noneautotype 变体</td>
+</tr>
+<tr>
+<td><code>com.alibaba:fastjson:1.2.54_noneautotype</code></td>
+<td>1.2.54 的 noneautotype 变体</td>
+</tr>
+<tr>
+<td><code>com.alibaba:fastjson:1.2.48_noneautotype</code></td>
+<td>1.2.48 的 noneautotype 变体</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>建议直接使用 <code>1.2.83_noneautotype</code>，它是 1.x 最后版本的安全变体。</p>
+</blockquote>
+<h4 id="⚠️-注意事项-1"><a href="#⚠️-注意事项-1" class="headerlink" title="⚠️ 注意事项"></a>⚠️ 注意事项</h4><ul>
+<li>noneautotype 版本完全不支持 AutoType，任何依赖 <code>@type</code> 的功能都会报错</li>
+<li>切换后需全面回归测试</li>
+<li>与 SafeMode 方案二选一即可，不需要同时使用</li>
+</ul>
+<hr>
+<h3 id="方案三：迁移到-Jackson（长期方案-—-JDK-6-兼容）"><a href="#方案三：迁移到-Jackson（长期方案-—-JDK-6-兼容）" class="headerlink" title="方案三：迁移到 Jackson（长期方案 — JDK 6 兼容）"></a>方案三：迁移到 Jackson（长期方案 — JDK 6 兼容）</h3><p><strong>适用场景</strong>：希望彻底摆脱 fastjson，迁移到社区更活跃、安全性更好的 JSON 库</p>
+<h4 id="JDK-6-兼容的-Jackson-版本"><a href="#JDK-6-兼容的-Jackson-版本" class="headerlink" title="JDK 6 兼容的 Jackson 版本"></a>JDK 6 兼容的 Jackson 版本</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Jackson 2.7.x 是支持 JDK 6 的最后版本系列 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.fasterxml.jackson.core<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jackson-databind<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.7.9<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- jackson-databind 会自动引入 jackson-core 和 jackson-annotations --&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>版本说明</strong>：</p>
+<ul>
+<li>Jackson 2.0–2.7：支持 JDK 6</li>
+<li>Jackson 2.8–2.12：需要 JDK 7</li>
+<li>Jackson 2.13+：需要 JDK 8</li>
+<li>推荐使用 <strong>2.7.9</strong>（2.7.x 最后一个 release）</li>
+</ul>
+</blockquote>
+<h4 id="API-对照表"><a href="#API-对照表" class="headerlink" title="API 对照表"></a>API 对照表</h4><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>fastjson 写法</th>
+<th>Jackson 写法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>对象转 JSON</td>
+<td><code>JSON.toJSONString(obj)</code></td>
+<td><code>mapper.writeValueAsString(obj)</code></td>
+</tr>
+<tr>
+<td>JSON 转对象</td>
+<td><code>JSON.parseObject(json, T.class)</code></td>
+<td><code>mapper.readValue(json, T.class)</code></td>
+</tr>
+<tr>
+<td>JSON 转 List</td>
+<td><code>JSON.parseArray(json, T.class)</code></td>
+<td><code>mapper.readValue(json, new TypeReference&lt;List&lt;T&gt;&gt;()&#123;&#125;)</code></td>
+</tr>
+<tr>
+<td>JSON 转 Map</td>
+<td><code>JSON.parseObject(json)</code></td>
+<td><code>mapper.readValue(json, new TypeReference&lt;Map&lt;String,Object&gt;&gt;()&#123;&#125;)</code></td>
+</tr>
+<tr>
+<td>获取字段</td>
+<td><code>JSONObject obj = JSON.parseObject(json); obj.getString(&quot;key&quot;)</code></td>
+<td><code>JsonNode node = mapper.readTree(json); node.get(&quot;key&quot;).asText()</code></td>
+</tr>
+</tbody></table>
+<h4 id="迁移代码示例"><a href="#迁移代码示例" class="headerlink" title="迁移代码示例"></a>迁移代码示例</h4><p><strong>fastjson 原始代码：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.JSON;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.JSONObject;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 序列化</span></span><br><span class="line"><span class="type">String</span> <span class="variable">json</span> <span class="operator">=</span> JSON.toJSONString(user);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 反序列化</span></span><br><span class="line"><span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> JSON.parseObject(json, User.class);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 解析为 JSONObject</span></span><br><span class="line"><span class="type">JSONObject</span> <span class="variable">obj</span> <span class="operator">=</span> JSON.parseObject(json);</span><br><span class="line"><span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> obj.getString(<span class="string">&quot;name&quot;</span>);</span><br><span class="line"><span class="type">int</span> <span class="variable">age</span> <span class="operator">=</span> obj.getIntValue(<span class="string">&quot;age&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>Jackson 迁移后代码：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.fasterxml.jackson.databind.ObjectMapper;</span><br><span class="line"><span class="keyword">import</span> com.fasterxml.jackson.databind.JsonNode;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ObjectMapper 建议全局复用（线程安全）</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">ObjectMapper</span> <span class="variable">mapper</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectMapper</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 序列化</span></span><br><span class="line"><span class="type">String</span> <span class="variable">json</span> <span class="operator">=</span> mapper.writeValueAsString(user);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 反序列化</span></span><br><span class="line"><span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> mapper.readValue(json, User.class);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 解析为 JsonNode（等价于 JSONObject）</span></span><br><span class="line"><span class="type">JsonNode</span> <span class="variable">node</span> <span class="operator">=</span> mapper.readTree(json);</span><br><span class="line"><span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> node.get(<span class="string">&quot;name&quot;</span>).asText();</span><br><span class="line"><span class="type">int</span> <span class="variable">age</span> <span class="operator">=</span> node.get(<span class="string">&quot;age&quot;</span>).asInt();</span><br></pre></td></tr></table></figure>
+
+<h4 id="Spring-Boot-中替换-fastjson-为-Jackson"><a href="#Spring-Boot-中替换-fastjson-为-Jackson" class="headerlink" title="Spring Boot 中替换 fastjson 为 Jackson"></a>Spring Boot 中替换 fastjson 为 Jackson</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.converter.HttpMessageConverter;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JacksonConfig</span> <span class="keyword">extends</span> <span class="title class_">WebMvcConfigurerAdapter</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">configureMessageConverters</span><span class="params">(List&lt;HttpMessageConverter&lt;?&gt;&gt; converters)</span> &#123;</span><br><span class="line">        <span class="comment">// 使用 Jackson 作为 JSON 消息转换器</span></span><br><span class="line">        <span class="type">MappingJackson2HttpMessageConverter</span> <span class="variable">converter</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MappingJackson2HttpMessageConverter</span>();</span><br><span class="line">        converters.add(<span class="number">0</span>, converter);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="⚠️-注意事项-2"><a href="#⚠️-注意事项-2" class="headerlink" title="⚠️ 注意事项"></a>⚠️ 注意事项</h4><ul>
+<li>Jackson 的默认行为<strong>不会</strong>自动反序列化 <code>@type</code> 指定的类，安全性更好</li>
+<li>但 Jackson 2.7.x 版本较旧，也有自己的历史 CVE，建议在条件允许时升级 JDK 后再升级 Jackson</li>
+<li>迁移工作量与项目中 fastjson 的使用范围成正比，需评估改造成本</li>
+<li>注意 <code>@JSONField</code> 注解需替换为 <code>@JsonProperty</code></li>
+</ul>
+<hr>
+<h3 id="方案四：迁移到-Gson（长期方案-—-JDK-6-兼容）"><a href="#方案四：迁移到-Gson（长期方案-—-JDK-6-兼容）" class="headerlink" title="方案四：迁移到 Gson（长期方案 — JDK 6 兼容）"></a>方案四：迁移到 Gson（长期方案 — JDK 6 兼容）</h3><p><strong>适用场景</strong>：项目 JSON 操作较简单，希望用更轻量的库替代</p>
+<h4 id="Maven-配置-1"><a href="#Maven-配置-1" class="headerlink" title="Maven 配置"></a>Maven 配置</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.google.code.gson<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>gson<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.8.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="API-对照表-1"><a href="#API-对照表-1" class="headerlink" title="API 对照表"></a>API 对照表</h4><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>fastjson 写法</th>
+<th>Gson 写法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>对象转 JSON</td>
+<td><code>JSON.toJSONString(obj)</code></td>
+<td><code>gson.toJson(obj)</code></td>
+</tr>
+<tr>
+<td>JSON 转对象</td>
+<td><code>JSON.parseObject(json, T.class)</code></td>
+<td><code>gson.fromJson(json, T.class)</code></td>
+</tr>
+<tr>
+<td>JSON 转 List</td>
+<td><code>JSON.parseArray(json, T.class)</code></td>
+<td><code>gson.fromJson(json, new TypeToken&lt;List&lt;T&gt;&gt;()&#123;&#125;.getType())</code></td>
+</tr>
+</tbody></table>
+<h4 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.google.gson.Gson;</span><br><span class="line"><span class="keyword">import</span> com.google.gson.reflect.TypeToken;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Gson</span> <span class="variable">gson</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Gson</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 序列化</span></span><br><span class="line"><span class="type">String</span> <span class="variable">json</span> <span class="operator">=</span> gson.toJson(user);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 反序列化</span></span><br><span class="line"><span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> gson.fromJson(json, User.class);</span><br><span class="line"></span><br><span class="line"><span class="comment">// List 反序列化</span></span><br><span class="line">List&lt;User&gt; users = gson.fromJson(json, <span class="keyword">new</span> <span class="title class_">TypeToken</span>&lt;List&lt;User&gt;&gt;()&#123;&#125;.getType());</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、方案选择决策矩阵"><a href="#四、方案选择决策矩阵" class="headerlink" title="四、方案选择决策矩阵"></a>四、方案选择决策矩阵</h2><table>
+<thead>
+<tr>
+<th>方案</th>
+<th>安全性</th>
+<th>改造成本</th>
+<th>JDK 1.6 兼容</th>
+<th>长期维护</th>
+<th>推荐场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>方案一：SafeMode</strong></td>
+<td>⭐⭐⭐⭐</td>
+<td>⭐⭐⭐⭐⭐（极低）</td>
+<td>✅</td>
+<td>⭐⭐</td>
+<td>紧急修复，临时加固</td>
+</tr>
+<tr>
+<td><strong>方案二：noneautotype</strong></td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>⭐⭐⭐⭐（低）</td>
+<td>✅</td>
+<td>⭐⭐</td>
+<td>彻底消除 AutoType 代码</td>
+</tr>
+<tr>
+<td><strong>方案三：迁移 Jackson</strong></td>
+<td>⭐⭐⭐⭐</td>
+<td>⭐⭐（高）</td>
+<td>✅ (2.7.x)</td>
+<td>⭐⭐⭐</td>
+<td>长期方案，团队熟悉 Jackson</td>
+</tr>
+<tr>
+<td><strong>方案四：迁移 Gson</strong></td>
+<td>⭐⭐⭐⭐</td>
+<td>⭐⭐⭐（中）</td>
+<td>✅ (2.8.5)</td>
+<td>⭐⭐⭐</td>
+<td>JSON 操作简单，追求轻量</td>
+</tr>
+</tbody></table>
+<h3 id="推荐策略"><a href="#推荐策略" class="headerlink" title="推荐策略"></a>推荐策略</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">紧急修复阶段（立即执行）：</span><br><span class="line">  → 方案一（SafeMode）或方案二（noneautotype）</span><br><span class="line">  → 确保在 24 小时内完成</span><br><span class="line"></span><br><span class="line">中期加固阶段（1-2 周内）：</span><br><span class="line">  → 评估业务对 AutoType 的依赖</span><br><span class="line">  → 制定迁移到 Jackson 或 Gson 的计划</span><br><span class="line"></span><br><span class="line">长期治理阶段（条件成熟时）：</span><br><span class="line">  → 升级 JDK 到 8+ 后，迁移到 fastjson2 或更高版本的 Jackson</span><br><span class="line">  → 彻底解决 JDK 1.6 带来的生态兼容性限制</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、排查清单"><a href="#五、排查清单" class="headerlink" title="五、排查清单"></a>五、排查清单</h2><h3 id="5-1-确认当前-fastjson-版本"><a href="#5-1-确认当前-fastjson-版本" class="headerlink" title="5.1 确认当前 fastjson 版本"></a>5.1 确认当前 fastjson 版本</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Maven 项目：查看依赖树</span></span><br><span class="line">mvn dependency:tree -Dincludes=com.alibaba:fastjson -Dverbose</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或在代码中输出版本</span></span><br><span class="line">System.out.println(com.alibaba.fastjson.JSON.class.getPackage().getImplementationVersion());</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-排查-AutoType-使用情况"><a href="#5-2-排查-AutoType-使用情况" class="headerlink" title="5.2 排查 AutoType 使用情况"></a>5.2 排查 AutoType 使用情况</h3><p>全局搜索以下关键词，评估 SafeMode/noneautotype 的影响：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">JSON.parse(</span><br><span class="line">JSON.parseObject(</span><br><span class="line">JSON.parseArray(</span><br><span class="line">@type</span><br><span class="line">@JSONType</span><br><span class="line">autoType</span><br><span class="line">AutoType</span><br><span class="line">addAccept</span><br><span class="line">setAutoTypeSupport</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-3-排查间接依赖"><a href="#5-3-排查间接依赖" class="headerlink" title="5.3 排查间接依赖"></a>5.3 排查间接依赖</h3><p>检查是否通过其他框架间接引入了 fastjson：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn dependency:tree -Dincludes=com.alibaba:fastjson</span><br></pre></td></tr></table></figure>
+
+<p>常见间接引入 fastjson 的框架：</p>
+<ul>
+<li>Dubbo（部分版本默认使用 fastjson 序列化）</li>
+<li>Spring Cloud Alibaba（部分组件）</li>
+<li>自定义 RPC 框架</li>
+</ul>
+<p>如果存在间接引入，需在对应依赖中排除 fastjson 或升级框架版本。</p>
+<hr>
+<h2 id="六、各方案-Maven-完整配置"><a href="#六、各方案-Maven-完整配置" class="headerlink" title="六、各方案 Maven 完整配置"></a>六、各方案 Maven 完整配置</h2><h3 id="方案一-方案二组合配置（推荐-JDK-1-6-项目的最优解）"><a href="#方案一-方案二组合配置（推荐-JDK-1-6-项目的最优解）" class="headerlink" title="方案一 + 方案二组合配置（推荐 JDK 1.6 项目的最优解）"></a>方案一 + 方案二组合配置（推荐 JDK 1.6 项目的最优解）</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 使用 noneautotype 版本，编译期移除 AutoType --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>fastjson<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.83_noneautotype<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>配合 JVM 启动参数（双保险）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -Dfastjson.parser.safeMode=<span class="literal">true</span> -jar your-app.jar</span><br></pre></td></tr></table></figure>
+
+<h3 id="方案三完整配置（迁移到-Jackson）"><a href="#方案三完整配置（迁移到-Jackson）" class="headerlink" title="方案三完整配置（迁移到 Jackson）"></a>方案三完整配置（迁移到 Jackson）</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 移除 fastjson --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">    &lt;dependency&gt;</span></span><br><span class="line"><span class="comment">        &lt;groupId&gt;com.alibaba&lt;/groupId&gt;</span></span><br><span class="line"><span class="comment">        &lt;artifactId&gt;fastjson&lt;/artifactId&gt;</span></span><br><span class="line"><span class="comment">        &lt;version&gt;1.2.83&lt;/version&gt;</span></span><br><span class="line"><span class="comment">    &lt;/dependency&gt;</span></span><br><span class="line"><span class="comment">    --&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 引入 Jackson 2.7.9（JDK 6 兼容） --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.fasterxml.jackson.core<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jackson-databind<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.7.9<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="排除间接依赖中的-fastjson"><a href="#排除间接依赖中的-fastjson" class="headerlink" title="排除间接依赖中的 fastjson"></a>排除间接依赖中的 fastjson</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.dubbo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dubbo-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>your-version<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>fastjson<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="七、总结"><a href="#七、总结" class="headerlink" title="七、总结"></a>七、总结</h2><table>
+<thead>
+<tr>
+<th>要点</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>漏洞性质</strong></td>
+<td>fastjson 1.2.68–1.2.83 默认配置下即可触发 RCE，”gadget-free” 利用方式</td>
+</tr>
+<tr>
+<td><strong>JDK 1.6 核心矛盾</strong></td>
+<td>fastjson2 最低要求 JDK 8，JDK 1.6 无法直接升级到 fastjson2</td>
+</tr>
+<tr>
+<td><strong>JDK 1.6 最优紧急方案</strong></td>
+<td>使用 <code>1.2.83_noneautotype</code> + SafeMode 双保险</td>
+</tr>
+<tr>
+<td><strong>JDK 1.6 长期方案</strong></td>
+<td>迁移到 Jackson 2.7.x 或 Gson 2.8.5（均兼容 JDK 6）</td>
+</tr>
+<tr>
+<td><strong>终极建议</strong></td>
+<td>条件允许时升级 JDK 到 8+，再迁移到 fastjson2 或最新版 Jackson</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>关键提醒</strong>：fastjson 1.x 已于 2024 年停止维护，即使使用 noneautotype 版本也只是权宜之计。对于 JDK 1.6 项目，最终出路在于升级 JDK 版本，以接入更安全的 JSON 库生态。</p>
+</blockquote>
+<hr>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.aliyun.com/notice/118472">阿里云漏洞通告</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/alibaba/fastjson2/wiki/Security-Advisory:-Remote-Code-Execution-in-fastjson-1.2.68%E2%80%931.2.83">fastjson2 安全公告（GitHub Wiki）</a></li>
+<li><a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/cve-2025-70974">CVE-2025-70974（NVD）</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/alibaba/fastjson/wiki/fastjson_safemode">fastjson SafeMode 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/alibaba/fastjson/wiki/security_update_20220523">fastjson noneautotype 版本说明</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/alibaba/fastjson2">fastjson2 仓库地址</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/alibaba/fastjson2/wiki/faq_cn">fastjson2 FAQ（JDK 版本支持）</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/FasterXML/jackson-databind">Jackson JDK 兼容性说明</a></li>
+</ul>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/WeChatPay.jpg">
+        <p> 谢谢你的咖啡！ </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+        <div id="lv-container"></div>
+        <div class="giscus"></div>
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        <li>
+            <a target="_blank" href="https://twitter.com/tangyonjian">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-twitter"></i>
+                            </span>
+            </a>
+        </li>
+        
+        
+        <li>
+            <a target="_blank" href="https://www.zhihu.com/people/tangyonjian">
+                            <span class="fa-stack fa-lg">
+                                 <i class="iconfont icon-zhihu"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+        <li>
+            <a target="_blank" href="http://weibo.com/1652401513">
+                            <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+        <li>
+            <a target="_blank" href="https://www.facebook.com/tangyonjian">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-facebook"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+        <li>
+            <a target="_blank"  href="https://github.com/tangyonjian">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+        <li>
+            <a target="_blank"  href="https://www.linkedin.com/in/tangyonjian">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-linkedin"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>  Theme <a target="_blank" rel="noopener" href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
+<script src="/js/index.js"></script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+</html>
